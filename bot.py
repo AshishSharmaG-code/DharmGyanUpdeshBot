@@ -1,7 +1,9 @@
 from telegram.ext import Updater, CommandHandler
 import random
+import os  # To access environment variables
 
-TOKEN = 'YOUR_BOT_TOKEN_HERE'  # Replace this with your actual Telegram Bot Token
+# Read the token from environment variable
+TOKEN = os.environ.get('BOT_TOKEN')  # Make sure you set BOT_TOKEN in your deployment settings
 
 gyan_list = [
     "🌿 जीवन में सच्चा सुख दूसरों की सेवा में है।",
@@ -25,13 +27,17 @@ def gyan(update, context):
     update.message.reply_text(random.choice(gyan_list))
 
 def main():
+    if not TOKEN:
+        print("❌ BOT_TOKEN environment variable not found.")
+        return
+
     updater = Updater(TOKEN, use_context=True)
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("gyan", gyan))
 
-    print("Bot is running...")
+    print("✅ Bot is running...")
     updater.start_polling()
     updater.idle()
 
