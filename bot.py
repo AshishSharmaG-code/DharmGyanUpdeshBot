@@ -3,9 +3,7 @@ import random
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
-# Environment variable
-TOKEN = os.getenv('BOT_TOKEN')
-
+# List of spiritual messages
 gyan_list = [
     "🌿 जीवन में सच्चा सुख दूसरों की सेवा में है।",
     "🕉️ सत्य ही परम धर्म है।",
@@ -14,6 +12,7 @@ gyan_list = [
     "🌞 हर दिन एक नई शुरुआत है।"
 ]
 
+# Start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     msg = f"""🙏 जय श्रीराम, {user.first_name} जी!
@@ -24,22 +23,25 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 आप /gyan टाइप करके एक दिव्य उपदेश प्राप्त कर सकते हैं।"""
     await update.message.reply_markdown(msg)
 
+# Gyan command
 async def gyan(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(random.choice(gyan_list))
 
+# Main function
 async def main():
-    if not TOKEN:
+    token = os.environ.get("BOT_TOKEN")
+    if not token:
         print("❌ BOT_TOKEN environment variable not found.")
         return
 
-    app = ApplicationBuilder().token(TOKEN).build()
-
+    app = ApplicationBuilder().token(token).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("gyan", gyan))
 
     print("✅ Bot is running...")
     await app.run_polling()
 
-if __name__ == '__main__':
+# Run the bot
+if __name__ == "__main__":
     import asyncio
     asyncio.run(main())
